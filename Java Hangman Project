@@ -1,0 +1,119 @@
+/* Created By: Tan Yew Seng
+ * Date: 100223
+ * HANG MAN PROJECT
+*/
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.Random;
+
+public class Project {
+	public static String[] wordsList = {"WORCESTERSHINE", "SUPERCALIFRAGILISTICEXPIALIDOCIOUS", "ONOMATOPOEIA", "PHENOMENON", "SESQUIPEDALIAN"};
+	public static Random random = new Random();
+	public static Scanner scanner = new Scanner(System.in);
+	public static ArrayList<String>  arr = new ArrayList<>();
+	public static String word = wordsList[(int)(Math.random() * wordsList.length)];
+	public static ArrayList<Character> guessed = new ArrayList<>();
+	
+	public static void printBoard(ArrayList<String> arr, int chances) {
+		System.out.print("The word looks like this: ");
+		for (String i : arr) {
+			System.out.print(i);
+		}
+		System.out.println();
+		if (chances > 1) {
+			System.out.println("You have " + chances + " guesses left.");
+		// print for 1 guess left
+		} else if (chances == 1) {
+			System.out.println("You have only one guess left");
+			
+		}
+			
+	}
+	
+	
+	public static boolean checkStatus(ArrayList<String> arr, String word, int chances) {
+		
+		String checkWinner = "";
+		
+		for (String i : arr) {
+			checkWinner += i;
+		}
+		
+		if (checkWinner.equals(word)) {
+			System.out.println("You guessed the word: " + word);
+			System.out.println("You win.");
+			return false;
+		} else if (chances == 0) {
+			System.out.println("You're completely hung.");
+			System.out.println("The word was: " + word);
+			System.out.println("You lose.");
+			return false;
+		} 
+		return true;		
+		}
+	
+	
+		public static void main(String[] args) {
+			// CREATE EMPTY string for the board
+			// Total Life	
+			int chances = 8;
+			// WELCOME MSG
+			System.out.println("Welcome to Hangman!");
+			// Adding "-" to represent the length of word		
+			for (int i = 0; i < word.length(); i++) {
+				arr.add("-");	
+			}
+			// printing the display of "-" and lives left
+			printBoard(arr, chances);
+			// if game is still running (no win/lose)		
+			while (checkStatus(arr, word, chances)) {
+				System.out.print("Your guess: ");
+				//scan for input		
+				String ans = scanner.nextLine();
+				// Convert inputs to Upper casing
+				String ansCaps = ans.toUpperCase();
+				//take char at first position
+				char letter = ansCaps.charAt(0);
+				// if char alr exist(you guessed it before)	
+				if (guessed.contains(letter)) {
+					System.out.println("You have already guessed " + letter);
+					//display the "dashes" and guessed char
+					printBoard(arr,chances);
+					//print the char you previously guessed
+					System.out.println("You have guessed these character(s) previously: " + guessed);
+					continue;
+				} else {
+					// add unique char to array list
+					guessed.add(letter);
+				}
+				System.out.println("You have guessed these character(s) previously: " + guessed);
+				//guessed char before		
+				if (arr.contains(ansCaps)) {
+					System.out.println("The character you guessed already exist!");
+					System.out.println("You have guessed these character(s) previously: " + guessed);
+							
+				} else {
+					// looping and checking if the guessed char exist in the word
+					for (int i = 0; i < word.length(); i++) {
+						//if exist
+						if (word.charAt(i) == letter) {
+							// remove dashes at position i which 
+							arr.remove(i);
+							// replace the dashes with the correctly guessed letter
+							arr.add(i, ansCaps);	
+							System.out.println("The guess is correct.");
+						}
+					}
+					
+						// if word dont contain the char life -1	
+						if (!arr.contains(ansCaps)) {
+							chances -= 1;		
+							System.out.println("There are no " + letter + "'s in the word.");
+						}
+					}
+					// printing the display of "-" and lives left
+					printBoard(arr,chances);				
+			}
+		}
+				
+}
